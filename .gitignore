@@ -26,4 +26,10 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-.vercel
+
+.env
+/test-results/
+/playwright-report/
+/playwright/.cache/
+# Webkit with playwright creates a salt file
+salt

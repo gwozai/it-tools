@@ -1,51 +1,4 @@
-<template>
-  <n-card>
-    <n-form label-width="120" label-placement="left" :show-feedback="false">
-      <n-form-item label="Your string:">
-        <n-input v-model:value="input" />
-      </n-form-item>
-
-      <n-divider />
-
-      <n-form-item label="Camelcase:">
-        <input-copyable :value="camelCase(input)" />
-      </n-form-item>
-      <n-form-item label="Capitalcase:">
-        <input-copyable :value="capitalCase(input)" />
-      </n-form-item>
-      <n-form-item label="Constantcase:">
-        <input-copyable :value="constantCase(input)" />
-      </n-form-item>
-      <n-form-item label="Dotcase:">
-        <input-copyable :value="dotCase(input)" />
-      </n-form-item>
-      <n-form-item label="Headercase:">
-        <input-copyable :value="headerCase(input)" />
-      </n-form-item>
-      <n-form-item label="Nocase:">
-        <input-copyable :value="noCase(input)" />
-      </n-form-item>
-      <n-form-item label="Paramcase:">
-        <input-copyable :value="paramCase(input)" />
-      </n-form-item>
-      <n-form-item label="Pascalcase:">
-        <input-copyable :value="pascalCase(input)" />
-      </n-form-item>
-      <n-form-item label="Pathcase:">
-        <input-copyable :value="pathCase(input)" />
-      </n-form-item>
-      <n-form-item label="Sentencecase:">
-        <input-copyable :value="sentenceCase(input)" />
-      </n-form-item>
-      <n-form-item label="Snakecase:">
-        <input-copyable :value="snakeCase(input)" />
-      </n-form-item>
-    </n-form>
-  </n-card>
-</template>
-
 <script setup lang="ts">
-import { ref } from 'vue';
 import {
   camelCase,
   capitalCase,
@@ -61,11 +14,100 @@ import {
 } from 'change-case';
 import InputCopyable from '../../components/InputCopyable.vue';
 
+const baseConfig = {
+  stripRegexp: /[^A-Za-zÀ-ÖØ-öø-ÿ]+/gi,
+};
+
 const input = ref('lorem ipsum dolor sit amet');
+
+const formats = computed(() => [
+  {
+    label: 'Lowercase:',
+    value: input.value.toLocaleLowerCase(),
+  },
+  {
+    label: 'Uppercase:',
+    value: input.value.toLocaleUpperCase(),
+  },
+  {
+    label: 'Camelcase:',
+    value: camelCase(input.value, baseConfig),
+  },
+  {
+    label: 'Capitalcase:',
+    value: capitalCase(input.value, baseConfig),
+  },
+  {
+    label: 'Constantcase:',
+    value: constantCase(input.value, baseConfig),
+  },
+  {
+    label: 'Dotcase:',
+    value: dotCase(input.value, baseConfig),
+  },
+  {
+    label: 'Headercase:',
+    value: headerCase(input.value, baseConfig),
+  },
+  {
+    label: 'Nocase:',
+    value: noCase(input.value, baseConfig),
+  },
+  {
+    label: 'Paramcase:',
+    value: paramCase(input.value, baseConfig),
+  },
+  {
+    label: 'Pascalcase:',
+    value: pascalCase(input.value, baseConfig),
+  },
+  {
+    label: 'Pathcase:',
+    value: pathCase(input.value, baseConfig),
+  },
+  {
+    label: 'Sentencecase:',
+    value: sentenceCase(input.value, baseConfig),
+  },
+  {
+    label: 'Snakecase:',
+    value: snakeCase(input.value, baseConfig),
+  },
+  {
+    label: 'Mockingcase:',
+    value: input.value
+      .split('')
+      .map((char, index) => (index % 2 === 0 ? char.toUpperCase() : char.toLowerCase()))
+      .join(''),
+  },
+]);
+
+const inputLabelAlignmentConfig = {
+  labelPosition: 'left',
+  labelWidth: '120px',
+  labelAlign: 'right',
+};
 </script>
 
-<style lang="less" scoped>
-.n-form-item {
-  margin: 5px 0;
-}
-</style>
+<template>
+  <c-card>
+    <c-input-text
+      v-model:value="input"
+      label="Your string:"
+      placeholder="Your string..."
+      raw-text
+      v-bind="inputLabelAlignmentConfig"
+    />
+
+    <div my-16px divider />
+
+    <InputCopyable
+      v-for="format in formats"
+      :key="format.label"
+      :value="format.value"
+      :label="format.label"
+      v-bind="inputLabelAlignmentConfig"
+      mb-1
+    />
+  </c-card>
+</template>

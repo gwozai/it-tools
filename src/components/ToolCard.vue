@@ -1,64 +1,41 @@
-<template>
-  <router-link :to="tool.path">
-    <n-card class="tool-card">
-      <n-space justify="space-between" align="center">
-        <n-icon class="icon" size="40" :component="tool.icon" />
-        <n-tag
-          v-if="tool.isNew"
-          size="small"
-          class="badge-new"
-          round
-          type="success"
-          :bordered="false"
-          :color="{ color: theme.primaryColor, textColor: theme.tagColor }"
-        >
-          New
-        </n-tag>
-      </n-space>
-      <n-h3 class="title">
-        <n-ellipsis>{{ tool.name }}</n-ellipsis>
-      </n-h3>
-
-      <div class="description">
-        <n-ellipsis :line-clamp="2" :tooltip="false">
-          {{ tool.description }}
-        </n-ellipsis>
-      </div>
-    </n-card>
-  </router-link>
-</template>
-
 <script setup lang="ts">
-import type { ITool } from '@/tools/tool';
 import { useThemeVars } from 'naive-ui';
-import { toRefs } from 'vue';
+import FavoriteButton from './FavoriteButton.vue';
+import type { Tool } from '@/tools/tools.types';
 
-const props = defineProps<{ tool: ITool & { category: string } }>();
+const props = defineProps<{ tool: Tool & { category: string } }>();
 const { tool } = toRefs(props);
 const theme = useThemeVars();
 </script>
 
-<style lang="less" scoped>
-a {
-  text-decoration: none;
-}
+<template>
+  <router-link :to="tool.path" class="decoration-none">
+    <c-card class="h-full transition transition-duration-0.5s !border-2px !hover:border-primary">
+      <div flex items-center justify-between>
+        <n-icon class="text-neutral-400 dark:text-neutral-600" size="40" :component="tool.icon" />
 
-.tool-card {
-  &:hover {
-    border-color: var(--n-color-target);
-  }
+        <div flex items-center gap-8px>
+          <div
+            v-if="tool.isNew"
+            class="rounded-full px-8px py-3px text-xs text-white dark:text-neutral-800"
+            :style="{
+              'background-color': theme.primaryColor,
+            }"
+          >
+            {{ $t('toolCard.new') }}
+          </div>
 
-  .icon {
-    opacity: 0.7;
-  }
+          <FavoriteButton :tool="tool" />
+        </div>
+      </div>
 
-  .title {
-    margin: 5px 0;
-  }
+      <div class="truncat my-5px text-lg text-black dark:text-white">
+        {{ tool.name }}
+      </div>
 
-  .description {
-    opacity: 0.7;
-    margin: 5px 0;
-  }
-}
-</style>
+      <div class="line-clamp-2 text-neutral-500 dark:text-neutral-400">
+        {{ tool.description }}
+      </div>
+    </c-card>
+  </router-link>
+</template>
